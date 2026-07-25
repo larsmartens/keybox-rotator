@@ -1,0 +1,7 @@
+id=keybox_rotator
+name=Keybox Rotator (CRL-validated)
+version=v1.0.1
+versionCode=10002
+author=larsmartens
+description=Fail-closed Google root and CRL validation for TEESimulator keybox rotation
+updateJson=https://raw.githubusercontent.com/larsmartens/keybox-rotator/main/update.json

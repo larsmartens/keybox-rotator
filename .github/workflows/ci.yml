@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install Python dependency
+        run: python -m pip install cryptography
+
+      - name: Validate source
+        run: |
+          python -m py_compile module/check.py module/fetch.py
+          for script in module/*.sh scripts/*.sh; do sh -n "$script"; done
+
+      - name: Run unit tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Build module archive
+        run: ./scripts/build.sh
+
+      - name: Inspect archive
+        run: |
+          unzip -l dist/keybox-rotator-v1.0.1.zip
+          ! unzip -Z1 dist/keybox-rotator-v1.0.1.zip | grep -E '(^|/)(__pycache__|keybox\.xml|rotator\.log)(/|$)'
+
+      - name: Upload module archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: keybox-rotator-v1.0.1
+          path: dist/keybox-rotator-v1.0.1.zip
+          if-no-files-found: error

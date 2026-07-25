@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+dist/
+*.xml
+*.pem
+*.key
+*.p12
+*.pfx
+rotator.log
